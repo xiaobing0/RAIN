@@ -111,12 +111,11 @@ if __name__ == '__main__':
     else:
         raise Exception('unknown dataset')
 
-    out_degrees = g.out_degrees()  # index-reoder
+    out_degrees = g.out_degrees()  
     sort_nid = th.argsort(out_degrees, descending=False)
     sor_m = sort_nid.tolist()
     random.shuffle(sor_m)
     sort_nid = th.tensor(sor_m)
-    # print(sort_nid)
     node_list = th.arange(g.num_nodes()).to(g.device)
     new_list = node_list[sort_nid]
     g = dgl.node_subgraph(g, new_list)
