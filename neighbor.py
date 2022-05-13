@@ -176,13 +176,13 @@ class MultiLayerDropoutSampler(BlockSampler):
         if len(src) < 10000:  # reddit
             frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
         elif 10000 < len(src) < 50000:
-            frontier = sampling.sample_neighbors(g, seed_nodes, 35)
-        elif 50000 < len(src) < 100000:
             frontier = sampling.sample_neighbors(g, seed_nodes, 40)
+        elif 50000 < len(src) < 100000:
+            frontier = sampling.sample_neighbors(g, seed_nodes, 50)
         elif 100000 < len(src) < 150000:
-            frontier = sampling.sample_neighbors(g, seed_nodes, 55)
+            frontier = sampling.sample_neighbors(g, seed_nodes, 60)
         else:
-            frontier = sampling.sample_neighbors(g, seed_nodes, 80)
+            frontier = sampling.sample_neighbors(g, seed_nodes, 70)
         return frontier
 
     def __len__(self):
