@@ -10,7 +10,7 @@ import argparse
 import tqdm
 import random
 
-from model1_original import SAGE
+from DGL_inf_model import SAGE
 from load_graph import load_reddit, inductive_split, load_ogb
 
 
