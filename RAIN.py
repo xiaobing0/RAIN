@@ -55,14 +55,12 @@ def run(args, device, data):
     val_nfeat, val_labels, test_nfeat, test_labels = data
     # in_feats = train_nfeat.shape[1]
     test_nid = th.nonzero(~(test_g.ndata['train_mask'] | test_g.ndata['val_mask']), as_tuple=True)[0]
-    # test_nfeat = test_nfeat.repeat(1, 5)
     in_feats = test_nfeat.shape[1]
     # Define model and optimizer
     net = SAGE(in_feats, args.num_hidden, n_classes, args.num_layers, F.relu, args.dropout)
     net = net.to(device)
 
-    net.load_state_dict(th.load('model2.pkl'))
-    # net.load_state_dict(th.load('model1_x5.pkl')) # embedding增加了5倍
+    net.load_state_dict(th.load('model1.pkl'))
     th.cuda.empty_cache()
     gpu_mem_alloc = th.cuda.max_memory_allocated() / 1000000 if th.cuda.is_available() else 0
     print('GPU ''{:.1f} MB'.format(gpu_mem_alloc))
@@ -79,7 +77,7 @@ if __name__ == '__main__':
     argparser = argparse.ArgumentParser()
     argparser.add_argument('--gpu', type=int, default=0,
                            help="GPU device ID. Use -1 for CPU training")
-    argparser.add_argument('--dataset', type=str, default='ogbn-products')
+    argparser.add_argument('--dataset', type=str, default='reddit')
     argparser.add_argument('--num-epochs', type=int, default=2)
     argparser.add_argument('--num-hidden', type=int, default=16)
     argparser.add_argument('--num-layers', type=int, default=2)
@@ -114,7 +112,7 @@ if __name__ == '__main__':
     else:
         raise Exception('unknown dataset')
 
-    out_degrees = g.out_degrees()  # index 按度重新排序
+    out_degrees = g.out_degrees()  # index-reorder
     sort_nid = torch.argsort(out_degrees, descending=False)
     node_list = th.arange(g.num_nodes()).to(g.device)
     new_list = node_list[sort_nid]
