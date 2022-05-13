@@ -177,31 +177,24 @@ class MinHashLSH(object):
             hashtable.insert(H, key, buffer=buffer)
 
     def query2(self):
-        '''
-        遍历所有
-        '''
-        # print("b:")
-        # print(self.b)
-        # print("r")
-        # print(self.r)
         g = nx.Graph()
         for hashtable in self.hashtables:
-            for keyy in hashtable:  # 这里的hashtable是一个字典
+            for keyy in hashtable:  # 
                 node_Set = []
-                for key in hashtable.get(keyy):  # keyy地址下的所有集合
+                for key in hashtable.get(keyy):  # 
                     node_Set.append(key)
-                for ind_o in range(len(node_Set)):  # 讲该哈希表, keyy键值下的所有点拿出来,再添加成边
+                for ind_o in range(len(node_Set)):  # 
                     for ind_i in range(ind_o, len(node_Set)):
                         g.add_edge(node_Set[ind_o], node_Set[ind_i])
-            break  # 只看第一个字典
-        ad_matrix = np.array(nx.adjacency_matrix(g).todense())  # 邻接矩阵
-        AA = []  # 邻接矩阵转化,每行是与i点相连的点编号
+            break  # 
+        ad_matrix = np.array(nx.adjacency_matrix(g).todense())  # 
+        AA = []  # 
         for i in range(len(ad_matrix)):
             AA.append([])
             for j in range(len(ad_matrix[i])):
                 if i != j and ad_matrix[i][j] == 1:
                     AA[i].append(j)
-        (edgecuts, parts) = pymetis.part_graph(nparts=4, adjacency=AA)  # 2是聚类后的种类数
+        (edgecuts, parts) = pymetis.part_graph(nparts=4, adjacency=AA)  # 
         new_index = []
         for ind_o in range(4):
             for ind_i in range(len(parts)):
@@ -209,45 +202,7 @@ class MinHashLSH(object):
                     new_index.append(ind_i)
         return new_index
 
-    # def query2(self):  # 考虑所有字典,上面的只考虑了一个字典
-    #     '''
-    #     遍历所有
-    #     '''
-    #     g = nx.Graph()
-    #     for hashtable in self.hashtables:
-    #         for keyy in hashtable:  # 这里的hashtable是一个字典
-    #             node_Set = []
-    #             for key in hashtable.get(keyy):  # keyy地址下的所有集合
-    #                 node_Set.append(key)
-    #             for ind_o in range(len(node_Set)):  # 讲该哈希表, keyy键值下的所有点拿出来,再添加成边
-    #                 for ind_i in range(ind_o, len(node_Set)):
-    #                     if g.has_edge(node_Set[ind_o], node_Set[ind_i]):  # 如果已经存在该边,该边权重在原来基础上＋1
-    #                         g.add_weighted_edges_from([(node_Set[ind_o], node_Set[ind_i], g.get_edge_data(node_Set[ind_o], node_Set[ind_i])['weight'] + 1)])
-    #                     else: # 如果不存在该边,建立该边,并将权重设置为1
-    #                         g.add_edge(node_Set[ind_o], node_Set[ind_i])
-    #                         g.add_weighted_edges_from([(node_Set[ind_o], node_Set[ind_i], 1)])
-    #         # break  # 只看第一个字典
-    #     ad_matrix = np.array(nx.adjacency_matrix(g).todense())  # 邻接矩阵
-    #     adj = []  #  表示与每个节点相连的节点编号
-    #     xadj = [0]  # 表示adjncy的每个节点开始与结束位置
-    #     eweight = []  # 与adjncy一一对应表示边权重，必须是整数
-    #     x_ind = 0
-    #     for i in range(len(ad_matrix)):
-    #         x_ind = x_ind + np.count_nonzero(np.array(ad_matrix[i]))
-    #         xadj.append(x_ind)
-    #         for j in range(len(ad_matrix[i])):
-    #             if i != j and ad_matrix[i][j] != 0:
-    #                 adj.append(j)
-    #                 eweight.append(ad_matrix[i][j])
-    #     (edgecuts, parts) = pymetis.part_graph(nparts=4,adjncy=adj,xadj=xadj,eweights=eweight)  # 2是聚类后的种类数
-    #     new_index = []
-    #     for ind_o in range(4):
-    #         for ind_i in range(len(parts)):
-    #             if parts[ind_i] == ind_o:
-    #                 new_index.append(ind_i)
-    #     return new_index
-    #
-
+  
     def query(self, minhash):
         '''
         Giving the MinHash of the query set, retrieve
