@@ -10,7 +10,7 @@ import argparse
 import tqdm
 import torch
 
-from model4_OURS import SAGE
+from RAIN_model import SAGE
 from load_graph import load_reddit, inductive_split, load_ogb
 
 th.multiprocessing.set_sharing_strategy('file_system')
