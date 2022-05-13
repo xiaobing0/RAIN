@@ -114,9 +114,9 @@ class SAGE(nn.Module):
                 Ind3 = []  # 
  
                 for in_s in range(len(Len_bat)):  # product
-                    if 0 < Len_bat[in_s] < 10000:
+                    if 0 < Len_bat[in_s] < 20000:
                         Ind1.append(in_s)
-                    elif 10000 < Len_bat[in_s] < 30000:
+                    elif 20000 < Len_bat[in_s] < 40000:
                         Ind2.append(in_s)
                     else:
                         Ind3.append(in_s)
