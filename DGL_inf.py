@@ -54,14 +54,12 @@ def run(args, device, data):
     val_nfeat, val_labels, test_nfeat, test_labels = data
 
     test_nid = th.nonzero(~(test_g.ndata['train_mask'] | test_g.ndata['val_mask']), as_tuple=True)[0]
-    # test_nfeat = test_nfeat.repeat(1, 5)
     in_feats = test_nfeat.shape[1]
     # Define model and optimizer
     net = SAGE(in_feats, args.num_hidden, n_classes, args.num_layers, F.relu, args.dropout)
     net = net.to(device)
 
     net.load_state_dict(th.load('model1.pkl'))
-    # net.load_state_dict(th.load('model1_x5.pkl'))
     th.cuda.empty_cache()
     gpu_mem_alloc = th.cuda.max_memory_allocated() / 1000000 if th.cuda.is_available() else 0
     print('GPU ''{:.1f} MB'.format(gpu_mem_alloc))
@@ -113,7 +111,7 @@ if __name__ == '__main__':
     else:
         raise Exception('unknown dataset')
 
-    out_degrees = g.out_degrees()  # index 按度重新排序
+    out_degrees = g.out_degrees()  # index-reoder
     sort_nid = th.argsort(out_degrees, descending=False)
     sor_m = sort_nid.tolist()
     random.shuffle(sor_m)
