@@ -14,6 +14,6 @@ RAIN also proposes an adaptive tuning strategy to sample the neighbors of the ta
 * Use the new "neighbor.py" to replace the old one in DGL.
 * Use the new "lsh.py" to replace the old one in datasketch.
 # Run
-Run "RAIN.py" to obtain the inference time of our system on the Reddit dataset.
+* Run "RAIN.py" to obtain the inference time of our system on the Reddit dataset.
 
-Run "DGL_inf.py" to obtain the inference time of the original DGL on the Reddit dataset.
+* Run "DGL_inf.py" to obtain the inference time of the original DGL on the Reddit dataset.
