@@ -172,107 +172,18 @@ class MultiLayerDropoutSampler(BlockSampler):
         # self.p = p
 
     def sample_frontier(self, block_id, g, seed_nodes, *args, **kwargs):
-        # 获取种 `seed_nodes` 的所有入边
         src, dst = dgl.in_subgraph(g, seed_nodes).all_edges()
-        # if len(src) < 10000:  # reddit
-        #     frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-        # # else:
-        # #     mask = torch.zeros_like(src).bernoulli_(self.p).bool()
-        # #     src = src[mask]
-        # #     dst = dst[mask]
-        # #     frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-        # # else:
-        # #     mask = torch.zeros_like(src).bool()
-        # #     # 每个边一个权重,从所有的边里按权重的概率取原来边的数目的p倍,p小于1
-        # #     # mask_m = list(torch.utils.data.WeightedRandomSampler([np.linalg.norm(self.fea[src[ind_e]]- self.fea[dst[ind_e]],
-        # #     #                  ord=1, axis=None, keepdims=False)+1 for ind_e in range(len(src))], 20000, replacement=False))
-        # #     mask_m = list(
-        # #         torch.utils.data.WeightedRandomSampler([1/g.in_degrees(dst[ind_e]) for ind_e in range(len(src))], 20000, replacement=False))
-        # #     mask[mask_m] = 1
-        # #     src = src[mask]
-        # #     dst = dst[mask]
-        # #     frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-        #
-        # elif 10000 < len(src) < 50000:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 35)
-        # elif 50000 < len(src) < 100000:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 40)
-        # elif 100000 < len(src) < 150000:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 55)
-        # else:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 80)
-        # return frontier
-
-        # if len(src) < 10000:  # product
-        #     frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-        # elif 10000 < len(src) < 30000:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 20)
-        # elif 30000 < len(src) < 60000:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 25)
-        # elif 60000 < len(src) < 100000:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 30)
-        # else:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 40)
-        # return frontier
-
-        # if len(src) < 10000:  # yel
-        #     frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-        # elif 10000 < len(src) < 20000:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 25)
-        # elif 20000 < len(src) < 60000:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 30)
-        # elif 60000 < len(src) < 100000:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 50)
-        # else:
-        #     frontier = sampling.sample_neighbors(g, seed_nodes, 70)
-        # return frontier
-
-        if len(src) < 10000:  # amazon
+        if len(src) < 10000:  # reddit
             frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-        elif 10000 < len(src) < 20000:
-            frontier = sampling.sample_neighbors(g, seed_nodes, 25)
-        elif 20000 < len(src) < 60000:
-            frontier = sampling.sample_neighbors(g, seed_nodes, 30)
-        elif 60000 < len(src) < 100000:
-            frontier = sampling.sample_neighbors(g, seed_nodes, 50)
+        elif 10000 < len(src) < 50000:
+            frontier = sampling.sample_neighbors(g, seed_nodes, 35)
+        elif 50000 < len(src) < 100000:
+            frontier = sampling.sample_neighbors(g, seed_nodes, 40)
+        elif 100000 < len(src) < 150000:
+            frontier = sampling.sample_neighbors(g, seed_nodes, 55)
         else:
-            frontier = sampling.sample_neighbors(g, seed_nodes, 70)
+            frontier = sampling.sample_neighbors(g, seed_nodes, 80)
         return frontier
-
-
-
-    def __len__(self):
-        return self.num_layers
-
-class MultiLayerDropoutSampler_2(BlockSampler):
-    def __init__(self, p, num_layers):
-        super().__init__(num_layers)
-        self.p = p
-
-    def sample_frontier(self, block_id, g, seed_nodes, *args, **kwargs):
-        # 获取种 `seed_nodes` 的所有入边
-        src, dst = dgl.in_subgraph(g, seed_nodes).all_edges()
-        # mask = torch.zeros_like(src).bernoulli_(0.8).bool()
-        # src = src[mask]
-        # dst = dst[mask]
-        # frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-
-        if len(src) < 120000:
-            # frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-            # frontier = sampling.sample_neighbors(g, seed_nodes, 10)
-            mask = torch.zeros_like(src).bernoulli_(0.96).bool()
-            src = src[mask]
-            dst = dst[mask]
-            frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-        else:
-            mask = torch.zeros_like(src).bernoulli_(0.9).bool()
-            src = src[mask]
-            dst = dst[mask]
-            frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-            frontier = dgl.graph((src, dst), num_nodes=g.number_of_nodes())
-        return frontier
-
-
 
     def __len__(self):
         return self.num_layers
