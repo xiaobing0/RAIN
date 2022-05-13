@@ -58,45 +58,43 @@ class SAGE(nn.Module):
         # Therefore, we compute the representation of all nodes layer by layer.  The nodes
         # on each layer are of course splitted in batches.
         # TODO: can we standardize this?
-        T = []  # 通信时间
-        T1 = []  # 计算时间
+        T = []  # comm time
+        T1 = []  # comp time
         nodess = 0
         for l, layer in enumerate(self.layers):
 
             y = th.zeros(g.num_nodes(), self.n_hidden if l != len(self.layers) - 1 else self.n_classes)
             sampler = dgl.dataloading.MultiLayerFullNeighborSampler(1)
-            # sampler = dgl.dataloading.MultiLayerDropoutSampler(1)
             dataloader = dgl.dataloading.NodeDataLoader(
                 g,
-                th.arange(g.num_nodes()).to(g.device),  # 所有的点
+                th.arange(g.num_nodes()).to(g.device),  #
                 sampler,
                 device=device if num_workers == 0 else None,
                 batch_size=batch_size,
                 shuffle=False,
                 drop_last=False,
                 num_workers=num_workers)
-
-            '''原始的'''
-            for input_nodes, output_nodes, blocks in tqdm.tqdm(dataloader):  # output_nodes每次不重复，加起来是所有的点
+            
+            for input_nodes, output_nodes, blocks in tqdm.tqdm(dataloader):  # 
                 nodess = nodess + len(input_nodes)
                 block = blocks[0]
-                t0 = time.time()  # 计时
-                block = block.int().to(device)  # block 在这里就是一个图
+                t0 = time.time()  # 
+                block = block.int().to(device)  # 
                 h = x[input_nodes].to(device)
-                t1 = time.time()  # 计时
-                T.append(t1 - t0)  # 计时
-                t0 = time.time()  # 计时
+                t1 = time.time()  # 
+                T.append(t1 - t0)  # 
+                t0 = time.time()  # 
                 h = layer(block, h)
                 if l != len(self.layers) - 1:
                     h = self.activation(h)
                     h = self.dropout(h)
                 y[output_nodes] = h.cpu()
-                t1 = time.time()  # 计时
-                T1.append(t1 - t0)  # 计时
-            t0 = time.time()  # 计时
+                t1 = time.time()  # 
+                T1.append(t1 - t0)  # 
+            t0 = time.time()  # 
             x = y
-            t1 = time.time()  # 计时
-            T1.append(t1 - t0)  # 计时
+            t1 = time.time()  # 
+            T1.append(t1 - t0)  # 
         print(nodess)
         return y, sum(T), sum(T1)
 
